@@ -1,0 +1,27 @@
+
+.profile-section {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 20px 30px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.profile-section p {
+    font-size: 17px;
+    margin: 12px 0;
+    color: #333;
+}
+
+.profile-section strong {
+    color: #007bff;
+    margin-right: 8px;
+}
+
+.container h2 {
+    color: #222;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+}
