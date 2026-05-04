@@ -1,0 +1,365 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ── Page Header ── -->
+<div class="store-header">
+    <div class="store-header-inner">
+        <h1 class="store-title">Our Products</h1>
+        <p class="store-subtitle">{{ products|length }} item{{ products|length|pluralize }} available</p>
+    </div>
+</div>
+
+<!-- ── Product Grid ── -->
+<div class="store-grid">
+    {% for product in products %}
+    <div class="product-card"
+         data-product-id="{{ product.id }}"
+         data-name="{{ product.name }}"
+         data-price="{{ product.price }}"
+         data-image="{{ product.imageURL }}"
+         data-digital="{{ product.digital|yesno:'Yes,No' }}">
+
+        <!-- Image (Quick View trigger) -->
+        <a href="#" class="product-img-wrap product-quick-view">
+            <img class="product-img" src="{{ product.imageURL }}" alt="{{ product.name }}">
+            <div class="product-img-overlay">
+                <span class="quick-view-text">Quick View</span>
+            </div>
+        </a>
+
+        <!-- Body -->
+        <div class="product-body">
+            <h6 class="product-name">{{ product.name }}</h6>
+
+            <div class="product-footer">
+                <span class="product-price">₹{{ product.price }}</span>
+
+                <div class="product-actions">
+                    <!-- Qty Stepper (hidden until added) -->
+                    <div class="qty-stepper hidden" id="stepper-{{ product.id }}">
+                        <button class="qty-btn update-cart"
+                                data-product="{{ product.id }}"
+                                data-action="remove" title="Remove one">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        </button>
+                        <span class="qty-count" id="qty-{{ product.id }}">0</span>
+                        <button class="qty-btn update-cart"
+                                data-product="{{ product.id }}"
+                                data-action="add" title="Add one">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Add to Cart -->
+                    <button id="add-btn-{{ product.id }}"
+                            class="btn-add-cart update-cart"
+                            data-product="{{ product.id }}"
+                            data-action="add">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 19 4H5.21L4.27 2H1v2h2l3.6 7.59L5.25 14c-.16.28-.25.61-.25.96C5 16.1 5.9 17 7 17h12v-2H7.42c-.13 0-.25-.11-.25-.25l.03-.12.9-1.63z"/>
+                        </svg>
+                        Add to Cart
+                    </button>
+
+                    <!-- View button -->
+                    <button class="btn-view product-quick-view" data-product-id="{{ product.id }}">View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="store-empty">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="color:#b0bec5;margin-bottom:16px;">
+            <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 19 4H5.21L4.27 2H1v2h2l3.6 7.59L5.25 14c-.16.28-.25.61-.25.96C5 16.1 5.9 17 7 17h12v-2H7.42c-.13 0-.25-.11-.25-.25l.03-.12.9-1.63z"/>
+        </svg>
+        <p>No products available yet.</p>
+    </div>
+    {% endfor %}
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PRODUCT DETAIL MODAL
+     ════════════════════════════════════════════════ -->
+<div id="product-modal" class="pmodal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="pmodal-card">
+
+        <!-- Close button -->
+        <button class="pmodal-close" id="modal-close" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+        </button>
+
+        <div class="pmodal-inner">
+            <!-- Left: image -->
+            <div class="pmodal-img-wrap">
+                <img id="modal-img" src="" alt="" class="pmodal-img">
+            </div>
+
+            <!-- Right: details -->
+            <div class="pmodal-details">
+
+                <!-- Type badge -->
+                <span class="pmodal-badge" id="modal-badge">Physical</span>
+
+                <h2 class="pmodal-name" id="modal-title">Product Name</h2>
+
+                <div class="pmodal-price-row">
+                    <span class="pmodal-price" id="modal-price">₹0</span>
+                    <span class="pmodal-in-stock">In Stock</span>
+                </div>
+
+                <div class="pmodal-divider"></div>
+
+                <!-- Mini info grid -->
+                <div class="pmodal-meta">
+                    <div class="pmodal-meta-item">
+                        <span class="pmodal-meta-label">Type</span>
+                        <span class="pmodal-meta-value" id="modal-type">—</span>
+                    </div>
+                    <div class="pmodal-meta-item">
+                        <span class="pmodal-meta-label">Delivery</span>
+                        <span class="pmodal-meta-value" id="modal-delivery">Standard</span>
+                    </div>
+                    <div class="pmodal-meta-item">
+                        <span class="pmodal-meta-label">Returns</span>
+                        <span class="pmodal-meta-value">7-day easy returns</span>
+                    </div>
+                    <div class="pmodal-meta-item">
+                        <span class="pmodal-meta-label">Payment</span>
+                        <span class="pmodal-meta-value">Cash / Online</span>
+                    </div>
+                </div>
+
+                <div class="pmodal-divider"></div>
+
+                <!-- Action row -->
+                <div class="pmodal-actions">
+                    <div class="qty-stepper pmodal-stepper hidden" id="modal-stepper">
+                        <button class="qty-btn update-cart" id="modal-remove"
+                                data-action="remove" title="Remove one">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+                        </button>
+                        <span class="qty-count" id="modal-qty">0</span>
+                        <button class="qty-btn update-cart" id="modal-add"
+                                data-action="add" title="Add one">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
+                    </div>
+
+                    <button class="btn-add-cart update-cart pmodal-add-btn" id="modal-add-btn"
+                            data-action="add">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 19 4H5.21L4.27 2H1v2h2l3.6 7.59L5.25 14c-.16.28-.25.61-.25.96C5 16.1 5.9 17 7 17h12v-2H7.42c-.13 0-.25-.11-.25-.25l.03-.12.9-1.63z"/>
+                        </svg>
+                        Add to Cart
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ════ JS ════ -->
+<script>
+(function () {
+
+    /* ── Cart helpers ─────────────────────────────────── */
+    function readCart() {
+        try { return JSON.parse(getCookie('cart')) || {}; }
+        catch (e) { return {}; }
+    }
+
+    function cartQty(pid) {
+        var c = readCart();
+        return (c[pid] && c[pid].quantity) ? parseInt(c[pid].quantity) : 0;
+    }
+
+    /* ── Card stepper (grid) helpers ──────────────────── */
+    function showStepper(pid, qty) {
+        var addBtn  = document.getElementById('add-btn-' + pid);
+        var stepper = document.getElementById('stepper-' + pid);
+        var qtyEl   = document.getElementById('qty-' + pid);
+        if (!addBtn || !stepper) return;
+        qtyEl.textContent = qty;
+        addBtn.classList.add('hidden');
+        stepper.classList.remove('hidden');
+    }
+
+    function showAddBtn(pid) {
+        var addBtn  = document.getElementById('add-btn-' + pid);
+        var stepper = document.getElementById('stepper-' + pid);
+        if (!addBtn || !stepper) return;
+        stepper.classList.add('hidden');
+        addBtn.classList.remove('hidden');
+    }
+
+    /* ── Restore grid stepper state on load ───────────── */
+    var cart = readCart();
+    Object.keys(cart).forEach(function (pid) {
+        var qty = cart[pid] && cart[pid].quantity ? cart[pid].quantity : 0;
+        if (qty > 0) showStepper(pid, qty);
+    });
+
+    /* ── Grid: Add to Cart click ──────────────────────── */
+    document.querySelectorAll('.btn-add-cart').forEach(function (btn) {
+        if (btn.id === 'modal-add-btn') return;          // handled separately
+        btn.addEventListener('click', function () {
+            showStepper(this.dataset.product, 1);
+        });
+    });
+
+    /* ── Grid: stepper − click ────────────────────────── */
+    document.querySelectorAll('.qty-stepper:not(.pmodal-stepper) .update-cart[data-action="remove"]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var pid   = this.dataset.product;
+            var qtyEl = document.getElementById('qty-' + pid);
+            var nq    = parseInt(qtyEl.textContent, 10) - 1;
+            if (nq <= 0) showAddBtn(pid);
+            else qtyEl.textContent = nq;
+        });
+    });
+
+    /* ── Grid: stepper + click ────────────────────────── */
+    document.querySelectorAll('.qty-stepper:not(.pmodal-stepper) .update-cart[data-action="add"]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var pid   = this.dataset.product;
+            var qtyEl = document.getElementById('qty-' + pid);
+            qtyEl.textContent = parseInt(qtyEl.textContent, 10) + 1;
+        });
+    });
+
+    /* ── Modal ────────────────────────────────────────── */
+    var modal        = document.getElementById('product-modal');
+    var modalClose   = document.getElementById('modal-close');
+    var modalImg     = document.getElementById('modal-img');
+    var modalTitle   = document.getElementById('modal-title');
+    var modalPrice   = document.getElementById('modal-price');
+    var modalBadge   = document.getElementById('modal-badge');
+    var modalType    = document.getElementById('modal-type');
+    var modalDelivery= document.getElementById('modal-delivery');
+    var modalAddBtn  = document.getElementById('modal-add-btn');
+    var modalStepper = document.getElementById('modal-stepper');
+    var modalQtyEl   = document.getElementById('modal-qty');
+    var modalAdd     = document.getElementById('modal-add');
+    var modalRemove  = document.getElementById('modal-remove');
+
+    var currentPid = null;
+
+    function openModal(card) {
+        currentPid = card.dataset.productId;
+        var name    = card.dataset.name;
+        var price   = card.dataset.price;
+        var image   = card.dataset.image;
+        var digital = card.dataset.digital; // 'Yes' or 'No'
+
+        /* populate */
+        modalImg.src            = image || '';
+        modalImg.alt            = name;
+        modalTitle.textContent  = name;
+        modalPrice.textContent  = '₹' + price;
+        modalBadge.textContent  = digital === 'Yes' ? 'Digital' : 'Physical';
+        modalBadge.className    = 'pmodal-badge ' + (digital === 'Yes' ? 'badge-digital' : 'badge-physical');
+        modalType.textContent   = digital === 'Yes' ? 'Digital Product' : 'Physical Product';
+        modalDelivery.textContent = digital === 'Yes' ? 'Instant download' : 'Standard shipping';
+
+        /* set product id on modal buttons */
+        modalAddBtn.dataset.product = currentPid;
+        modalAdd.dataset.product    = currentPid;
+        modalRemove.dataset.product = currentPid;
+
+        /* show correct state */
+        var qty = cartQty(currentPid);
+        if (qty > 0) {
+            modalQtyEl.textContent = qty;
+            modalAddBtn.classList.add('hidden');
+            modalStepper.classList.remove('hidden');
+        } else {
+            modalStepper.classList.add('hidden');
+            modalAddBtn.classList.remove('hidden');
+        }
+
+        modal.classList.add('pmodal-open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.remove('pmodal-open');
+        document.body.style.overflow = '';
+        currentPid = null;
+    }
+
+    /* open triggers */
+    document.querySelectorAll('.product-quick-view').forEach(function (trigger) {
+        trigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            var pid  = this.dataset.productId;
+            var card = pid
+                ? document.querySelector('.product-card[data-product-id="' + pid + '"]')
+                : this.closest('.product-card');
+            if (card) openModal(card);
+        });
+    });
+
+    /* close triggers */
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    /* modal Add to Cart */
+    modalAddBtn.addEventListener('click', function () {
+        var pid = this.dataset.product;
+        // sync grid stepper
+        showStepper(pid, 1);
+        // show modal stepper
+        modalQtyEl.textContent = 1;
+        modalAddBtn.classList.add('hidden');
+        modalStepper.classList.remove('hidden');
+        // trigger cart.js (which handles server/cookie update & reload)
+        if (user === 'AnonymousUser') addCookieItem(pid, 'add');
+        else updateUserOrder(pid, 'add');
+    });
+
+    /* modal + */
+    modalAdd.addEventListener('click', function () {
+        var pid = this.dataset.product;
+        var nq  = parseInt(modalQtyEl.textContent, 10) + 1;
+        modalQtyEl.textContent = nq;
+        // sync grid
+        var gqtyEl = document.getElementById('qty-' + pid);
+        if (gqtyEl) gqtyEl.textContent = nq;
+        if (user === 'AnonymousUser') addCookieItem(pid, 'add');
+        else updateUserOrder(pid, 'add');
+    });
+
+    /* modal − */
+    modalRemove.addEventListener('click', function () {
+        var pid = this.dataset.product;
+        var nq  = parseInt(modalQtyEl.textContent, 10) - 1;
+        if (nq <= 0) {
+            modalStepper.classList.add('hidden');
+            modalAddBtn.classList.remove('hidden');
+            // sync grid
+            showAddBtn(pid);
+        } else {
+            modalQtyEl.textContent = nq;
+            var gqtyEl = document.getElementById('qty-' + pid);
+            if (gqtyEl) gqtyEl.textContent = nq;
+        }
+        if (user === 'AnonymousUser') addCookieItem(pid, 'remove');
+        else updateUserOrder(pid, 'remove');
+    });
+
+})();
+</script>
+
+{% endblock content %}

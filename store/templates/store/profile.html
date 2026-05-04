@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% extends 'store/Main.html' %}
+{% block content %}
+{% load static %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}?v=1.2">
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar-container">
+                <form method="POST" action="" enctype="multipart/form-data" id="profile-pic-form" style="width: 100%; height: 100%; position: relative;">
+                    {% csrf_token %}
+                    {% if customer and customer.profile_pic %}
+                        <img src="{{ customer.profile_pic_url }}" class="profile-avatar" style="object-fit: cover;">
+                    {% else %}
+                        <div class="profile-avatar">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                    {% endif %}
+                    
+                    <label for="id_profile_pic" class="avatar-upload-btn">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" name="profile_pic" id="id_profile_pic" class="d-none" accept="image/*" onchange="document.getElementById('profile-pic-form').submit();">
+                </form>
+            </div>
+        </div>
+        <div class="profile-body">
+            <h2 class="profile-name">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</h2>
+            <p class="profile-username">@{{ user.username }}</p>
+            
+            <div class="profile-details">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Email Address</div>
+                        <div class="detail-value">{% if user.email %}{{ user.email }}{% else %}Not provided{% endif %}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">First Name</div>
+                        <div class="detail-value">{% if user.first_name %}{{ user.first_name }}{% else %}Not provided{% endif %}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Last Name</div>
+                        <div class="detail-value">{% if user.last_name %}{{ user.last_name }}{% else %}Not provided{% endif %}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="detail-content">
+                        <div class="detail-label">Role</div>
+                        <div class="detail-value">
+                            {% if user.is_superuser %}
+                                <span class="role-badge admin">Administrator</span>
+                            {% else %}
+                                <span class="role-badge customer">Customer</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

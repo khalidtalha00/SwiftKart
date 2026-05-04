@@ -1,0 +1,299 @@
+/* ═══════════════════════════════════════════════
+   SwiftKart — Premium Profile Page CSS
+   Brand: teal #4f868c / deep #2d6068
+   ═══════════════════════════════════════════════ */
+
+:root {
+    --brand-primary:   #4f868c;
+    --brand-deep:      #2d6068;
+    --brand-light:     rgba(79, 134, 140, 0.12);
+    --brand-gradient:  linear-gradient(135deg, #4f868c 0%, #2d6068 100%);
+
+    --text-dark:       #1a2a2b;
+    --text-body:       #374151;
+    --text-muted:      #6b7280;
+
+    --surface:         #ffffff;
+    --surface-alt:     #f8fafa;
+    --border:          rgba(0, 0, 0, 0.06);
+
+    --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.07);
+    --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.09);
+    --shadow-lg:  0 20px 50px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(79, 134, 140, 0.15);
+
+    --radius-card:  22px;
+    --radius-item:  14px;
+    --radius-icon:  12px;
+}
+
+/* ── Font ── */
+.profile-wrapper,
+.profile-wrapper * {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
+}
+
+/* ────────────────────────────────────────────
+   Wrapper / Page layout
+   ──────────────────────────────────────────── */
+.profile-wrapper {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem 4rem;
+    animation: profileFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes profileFadeIn {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ────────────────────────────────────────────
+   Card
+   ──────────────────────────────────────────── */
+.profile-card {
+    background: var(--surface);
+    border-radius: var(--radius-card);
+    width: 100%;
+    max-width: 560px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.35s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.13), 0 6px 20px rgba(79, 134, 140, 0.2);
+}
+
+/* ────────────────────────────────────────────
+   Header banner
+   ──────────────────────────────────────────── */
+.profile-header {
+    background: var(--brand-gradient);
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative orbs */
+.profile-header::before {
+    content: '';
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    top: -80px;
+    right: -60px;
+    pointer-events: none;
+}
+
+.profile-header::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    bottom: -60px;
+    left: -40px;
+    pointer-events: none;
+}
+
+/* ────────────────────────────────────────────
+   Avatar
+   ──────────────────────────────────────────── */
+.profile-avatar-container {
+    position: absolute;
+    bottom: -58px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 116px;
+    height: 116px;
+    border-radius: 50%;
+    background: var(--surface);
+    padding: 5px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    z-index: 10;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--brand-gradient);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+/* Camera upload button */
+.avatar-upload-btn {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 30px;
+    height: 30px;
+    background: var(--surface);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    color: var(--brand-primary);
+    font-size: 0.75rem;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    z-index: 20;
+    border: 1px solid var(--border);
+}
+
+.avatar-upload-btn:hover {
+    background: var(--brand-primary);
+    color: #ffffff;
+    transform: scale(1.12);
+}
+
+/* ────────────────────────────────────────────
+   Body
+   ──────────────────────────────────────────── */
+.profile-body {
+    padding: 76px 40px 44px;
+    text-align: center;
+    background: var(--surface-alt);
+}
+
+/* Name & username */
+.profile-name {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 5px;
+    line-height: 1.2;
+}
+
+.profile-username {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 32px;
+    letter-spacing: 0.3px;
+}
+
+/* ────────────────────────────────────────────
+   Detail items
+   ──────────────────────────────────────────── */
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.detail-item {
+    background: var(--surface);
+    padding: 15px 18px;
+    border-radius: var(--radius-item);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: default;
+}
+
+.detail-item:hover {
+    transform: translateX(6px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(79, 134, 140, 0.25);
+}
+
+/* Icon badge */
+.detail-icon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-icon);
+    background: var(--brand-light);
+    color: var(--brand-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15rem;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.detail-item:hover .detail-icon {
+    background: var(--brand-gradient);
+    color: #ffffff;
+    transform: scale(1.08) rotate(4deg);
+}
+
+/* Text */
+.detail-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.detail-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: var(--text-body);
+    font-weight: 600;
+    word-break: break-all;
+}
+
+/* Role badge */
+.detail-value .role-badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.role-badge.admin {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.role-badge.customer {
+    background: var(--brand-light);
+    color: var(--brand-deep);
+}
+
+/* ────────────────────────────────────────────
+   Responsive
+   ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .profile-body {
+        padding: 72px 20px 32px;
+    }
+    .profile-name {
+        font-size: 1.6rem;
+    }
+    .profile-header {
+        height: 150px;
+    }
+}
